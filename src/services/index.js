@@ -1,11 +1,7 @@
 import express from "express";
 import fs from "fs-extra";
 import { mediaJSONPath, reviewsJSONPath } from "../lib/paths.js";
-import {
-  mediaValidation,
-  posterValidation,
-  reviewsValidation,
-} from "./validation.js";
+import { mediaValidation, reviewsValidation } from "./validation.js";
 import { validationResult } from "express-validator";
 import createHttpError from "http-errors";
 import uniqid from "uniqid";
@@ -149,5 +145,36 @@ mediaRouter.post(
     }
   }
 );
+
+// ================ update media =================
+mediaRouter.put("/:id", mediaValidation, async (req, res, next) => {
+  try {
+    const errorList = validationResult(req);
+    if (errorList.isEmpty()) {
+      const paramsID = req.params.id;
+      const media = await readJSON(mediaJSONPath);
+      const singleMedia = media.find((m) => m.imdbID === paramsID);
+
+      if (singleMedia) {
+        const remainingMedia = media.filter((m) => m.imdbID !== paramsID);
+        const updatedMedia = { ...singleMedia, ...req.body };
+
+        remainingMedia.push(updatedMedia);
+        await writeJSON(mediaJSONPath, remainingMedia);
+
+        res.send({
+          updatedMedia,
+          message: `The media with imdbID: ${singleMedia.imdbID} was Updated. `,
+        });
+      } else {
+        next(createHttpError(404, `Media with the id: ${paramsID} not found.`));
+      }
+    } else {
+      next(createHttpError(400, { errorList }));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default mediaRouter;

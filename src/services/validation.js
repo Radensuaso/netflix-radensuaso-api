@@ -13,13 +13,6 @@ export const mediaValidation = [
     .withMessage("Type has to be minimum 5 characters"),
 ];
 
-//================ media poster validation ===================
-export const posterValidation = [
-  body("Poster")
-    .isLength({ min: 10 })
-    .withMessage("Poster has to be minimum 10 characters"),
-];
-
 //================ reviews validation ===================
 export const reviewsValidation = [
   body("comment")
