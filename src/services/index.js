@@ -177,4 +177,32 @@ mediaRouter.put("/:id", mediaValidation, async (req, res, next) => {
   }
 });
 
+// ================ delete media =================
+mediaRouter.delete("/:id", async (req, res, next) => {
+  try {
+    const paramsID = req.params.id;
+    const media = await readJSON(mediaJSONPath);
+    const singleMedia = media.find((m) => m.imdbID === paramsID);
+    if (singleMedia) {
+      const remainingMedia = media.filter((m) => m.imdbID !== paramsID);
+
+      await writeJSON(mediaJSONPath, remainingMedia);
+
+      res.send({
+        singleMedia,
+        message: `The media with the id: ${singleMedia.imdbID} was deleted`,
+      });
+    } else {
+      next(
+        createHttpError(
+          404,
+          `The media with the imdbID: ${paramsID} was not found.`
+        )
+      );
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default mediaRouter;
