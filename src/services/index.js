@@ -46,8 +46,9 @@ mediaRouter.get("/", async (req, res, next) => {
 
         if (omdbData.Response === "True") {
           const omdbMedia = omdbData.Search;
-          await writeJSON(mediaJSONPath, omdbMedia);
-          res.send({ media: omdbMedia, reviews });
+          media.push(...omdbMedia);
+          await writeJSON(mediaJSONPath, media);
+          res.send(omdbMedia);
         } else {
           next(createHttpError(404, omdbData.Error));
         }
