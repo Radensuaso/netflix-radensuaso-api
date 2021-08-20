@@ -1,1 +1,30 @@
-[]
+[
+  {
+    "_id": "123455",
+    "comment": "A good book but definitely I don't like many parts of the plot",
+    "rate": 3,
+    "elementId": "qd3vy5kckskeeitr",
+    "createdAt": "2019-08-01T12:46:45.895Z"
+  },
+  {
+    "_id": "1234555",
+    "comment": "YEAHHHHHHHHHHHHHHHHHHHH",
+    "rate": 5,
+    "elementId": "qd3vy5kckskeeitr",
+    "createdAt": "2019-08-01T12:46:45.895Z"
+  },
+  {
+    "_id": "12345555",
+    "comment": "Awesome! Awesome! Awesome! Awesome! Awesome!",
+    "rate": 5,
+    "elementId": "qd3vy5kckskeeitr",
+    "createdAt": "2019-08-01T12:46:45.895Z"
+  },
+  {
+    "_id": "123455555",
+    "comment": "A good book but definitely I its niiiiiiice",
+    "rate": 3,
+    "elementId": "qd3vy5kckskeeitr",
+    "createdAt": "2019-08-01T12:46:45.895Z"
+  }
+]

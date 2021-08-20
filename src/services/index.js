@@ -205,4 +205,43 @@ mediaRouter.delete("/:id", async (req, res, next) => {
   }
 });
 
+// =============== download PDF ======================
+mediaRouter.get("/:id/pdf", async (req, res, next) => {
+  try {
+    const paramsID = req.params.id;
+    const media = await readJSON(mediaJSONPath);
+    const singleMedia = media.find((m) => m.imdbID === paramsID);
+    if (singleMedia) {
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename=${singleMedia.Title}.pdf`
+      ); // this enables to download the pdf
+
+      const reviews = await readJSON(reviewsJSONPath);
+      const singleMediaReviews = reviews.filter(
+        (r) => r.elementId === paramsID
+      );
+
+      const source = await getMediaPDFReadableStream(
+        singleMedia,
+        singleMediaReviews
+      );
+      const destination = res;
+
+      pipeline(source, destination, (err) => {
+        if (err) next(err);
+      });
+    } else {
+      res.send(
+        createHttpError(
+          404,
+          `The media with the imdbID: ${paramsID} not found.`
+        )
+      );
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default mediaRouter;

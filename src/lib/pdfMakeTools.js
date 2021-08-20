@@ -15,28 +15,42 @@ const fonts = {
   },
 };
 
-export const getMediaPDFReadableStream = async (media) => {
+export const getMediaPDFReadableStream = async (media, reviews) => {
   const printer = new PdfPrinter(fonts);
-  const base64Image = await turnToBase64Format(media.cover);
+  const base64Poster = await turnToBase64Format(media.Poster);
 
   const docDefinition = {
     content: [
-      { image: base64Image, width: 510 },
-      "\n\n\n",
       {
-        text: media.title,
+        text: `${media.Title} (${media.Year}) - ${media.Type}`,
         style: "header",
       },
+      "\n\n",
+      { image: base64Poster, width: 300 },
       "\n\n\n",
-      media.content,
     ],
     styles: {
       header: {
         fontSize: 18,
         bold: true,
       },
+      subHeader: {
+        fontSize: 16,
+        bold: true,
+      },
     },
   };
+
+  reviews.forEach((r) =>
+    docDefinition.content.push([
+      { text: "Comment", style: "subHeader" },
+      r.comment,
+      r.createdAt,
+      { text: "Rate", style: "subHeader" },
+      r.rate,
+    ])
+  );
+
   const pdfReadableStream = printer.createPdfKitDocument(docDefinition);
 
   pdfReadableStream.end();
