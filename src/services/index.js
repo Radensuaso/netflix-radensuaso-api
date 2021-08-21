@@ -37,7 +37,7 @@ mediaRouter.get("/", async (req, res, next) => {
       );
 
       if (filteredMedia.length > 0) {
-        res.send({ media: filteredMedia, reviews });
+        res.send({ media: filteredMedia });
       } else {
         const omdbResponse = await axios.get(
           process.env.OMDB_URL + reqQuery.Title
@@ -48,7 +48,7 @@ mediaRouter.get("/", async (req, res, next) => {
           const omdbMedia = omdbData.Search;
           media.push(...omdbMedia);
           await writeJSON(mediaJSONPath, media);
-          res.send(omdbMedia);
+          res.send({ media: omdbMedia });
         } else {
           next(createHttpError(404, omdbData.Error));
         }
