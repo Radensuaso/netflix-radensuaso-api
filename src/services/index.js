@@ -73,7 +73,7 @@ mediaRouter.get("/:id", async (req, res, next) => {
       const singleMediaReviews = reviews.filter(
         (r) => r.elementId === paramsID
       );
-      res.send({ singleMedia, singleMediaReviews });
+      res.send({ media: singleMedia, reviews: singleMediaReviews });
     } else {
       next(
         createHttpError(404, `Media with the imdbID: ${paramsID} not found.`)
