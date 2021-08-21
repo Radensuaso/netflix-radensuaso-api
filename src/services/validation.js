@@ -21,7 +21,4 @@ export const reviewsValidation = [
   body("rate")
     .isFloat({ min: 1, max: 5 })
     .withMessage("The rate has to be a numeric value between 1 and 5."),
-  body("elementId")
-    .isLength({ min: 1 })
-    .withMessage("The elementId has to be minimum 1 character"),
 ];

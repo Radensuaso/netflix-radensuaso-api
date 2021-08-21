@@ -75,8 +75,8 @@ mediaRouter.get("/:id", async (req, res, next) => {
       );
       res.send({ singleMedia, singleMediaReviews });
     } else {
-      res.send(
-        createHttpError(404, `Media with the id: ${paramsID} not found.`)
+      next(
+        createHttpError(404, `Media with the imdbID: ${paramsID} not found.`)
       );
     }
   } catch (error) {
@@ -233,7 +233,7 @@ mediaRouter.get("/:id/pdf", async (req, res, next) => {
         if (err) next(err);
       });
     } else {
-      res.send(
+      next(
         createHttpError(
           404,
           `The media with the imdbID: ${paramsID} not found.`
@@ -245,4 +245,72 @@ mediaRouter.get("/:id/pdf", async (req, res, next) => {
   }
 });
 
+// =============== Media Reviews ===================
+mediaRouter.post("/:id/reviews", reviewsValidation, async (req, res, next) => {
+  try {
+    const errorList = validationResult(req);
+    if (errorList.isEmpty()) {
+      const paramsID = req.params.id;
+      const media = await readJSON(mediaJSONPath);
+      const singleMedia = media.find((m) => m.imdbID === paramsID);
+
+      if (singleMedia) {
+        const reqBody = req.body;
+        const newReview = {
+          _id: uniqid(),
+          comment: reqBody.comment,
+          rate: reqBody.rate,
+          elementId: paramsID,
+          createdAt: new Date(),
+        };
+
+        const reviews = await readJSON(reviewsJSONPath);
+
+        reviews.push(newReview);
+        await writeJSON(reviewsJSONPath, reviews);
+
+        res.status(201).send({
+          newMedia: newReview,
+          message: "New media was created with success!",
+        });
+      } else {
+        next(
+          createHttpError(404, `Media with the imdbID: ${paramsID} not found.`)
+        );
+      }
+    } else {
+      next(createHttpError(400, { errorList }));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ================= Delete Media reviews ===============
+mediaRouter.delete("/reviews/:id", async (req, res, next) => {
+  try {
+    const paramsID = req.params.id;
+    const reviews = await readJSON(reviewsJSONPath);
+    const review = reviews.find((r) => r._id === paramsID);
+    if (review) {
+      const remainingReviews = reviews.filter((r) => r._id !== paramsID);
+
+      await writeJSON(reviewsJSONPath, remainingReviews);
+
+      res.send({
+        review,
+        message: `The media with the id: ${review._id} was deleted`,
+      });
+    } else {
+      next(
+        createHttpError(
+          404,
+          `The review with the ID: ${paramsID} was not found.`
+        )
+      );
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 export default mediaRouter;

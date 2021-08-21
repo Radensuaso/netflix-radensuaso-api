@@ -26,17 +26,21 @@ export const getMediaPDFReadableStream = async (media, reviews) => {
         style: "header",
       },
       "\n\n",
-      { image: base64Poster, width: 300 },
+      { image: base64Poster, width: 250, style: "centerMe" },
       "\n\n\n",
     ],
     styles: {
       header: {
         fontSize: 18,
         bold: true,
+        alignment: "center",
       },
       subHeader: {
         fontSize: 16,
         bold: true,
+      },
+      centerMe: {
+        alignment: "center",
       },
     },
   };
