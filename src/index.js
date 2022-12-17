@@ -10,24 +10,10 @@ import {
 } from "./errorHandlers.js";
 
 const server = express();
-const port = process.env.PORT || 9000; // this will be the port on with the server will run
-
-// cors options
-const whitelist = [process.env.FE_DEV_URL, process.env.FE_PROD_URL];
-
-const corsOpts = {
-    origin: (origin, next) => {
-        console.log("Origin --> ", origin);
-        if (!origin || whitelist.indexOf(origin) !== -1) {
-            next(null, true);
-        } else {
-            next(new Error(`Origin ${origin} is not allowed`));
-        }
-    },
-}; // options to be passed in the cors() middle ware
+const PORT = process.env.PORT || 9000; // this will be the port on with the server will run
 
 //=========== GLOBAL MIDDLEWARES ======================
-server.use(cors(corsOpts));
+server.use(cors());
 server.use(express.json()); // this will enable reading of the bodies of requests, THIS HAS TO BE BEFORE server.use("/authors", authorsRouter)
 
 // ========== ROUTES =======================
@@ -42,6 +28,6 @@ server.use(genericServerErrorHandler);
 
 console.table(listEndpoints(server)); // will show us the detailed endpoints in a table
 
-server.listen(port, () =>
-    console.log(`Server is listening to the port ${port}.`)
+server.listen(PORT, () =>
+    console.log(`Server is listening to the port ${PORT}.`)
 );
