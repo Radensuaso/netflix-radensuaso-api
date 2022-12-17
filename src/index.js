@@ -10,7 +10,7 @@ import {
 } from "./errorHandlers.js";
 
 const server = express();
-const port = process.env.PORT; // this will be the port on with the server will run
+const port = process.env.PORT || 9000; // this will be the port on with the server will run
 
 // cors options
 const whitelist = [process.env.FE_DEV_URL, process.env.FE_PROD_URL];
